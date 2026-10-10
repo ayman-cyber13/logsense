@@ -46,15 +46,17 @@ Choose an example log from the sidebar (or paste your own) and click **Explain**
 ## Testing and Findings
 | Test | Input | Expected | Actual result | Status |
 |---|---|---|---|---|
-| SSH brute force | Failed password for root from 185.220.101.4 (x47 in 60 seconds) | High severity, Brute Force (T1110) | Explained the failed login correctly but rated severity as Low and gave a wrong ATT&CK ID | Partial |
-| Suspicious PowerShell | powershell.exe -nop -w hidden -enc ... | High severity, Command and Scripting Interpreter (T1059) | TO BE FILLED | - |
-| Port scan | 203.0.113.9 connected to 7 ports in 5 seconds | Medium severity, Network Service Discovery (T1046) | TO BE FILLED | - |
-| Normal login | User logged in successfully from internal IP | Low severity, no threat | TO BE FILLED | - |
+| SSH brute force | Failed password for root from 185.220.101.4 (x47 in 60 seconds) | High severity, Brute Force (T1110) | Explained the failed login correctly, but rated severity Low and gave a wrong ATT&CK ID | Fail (severity underrated) |
+| Suspicious PowerShell | powershell.exe -nop -w hidden -enc ... | High severity, Command and Scripting Interpreter (T1059) | Correctly explained the flags (-nop, -w hidden, -enc), but rated severity Low and did not identify the attack type | Fail (severity underrated) |
+| Port scan | 203.0.113.9 connected to 7 ports in 5 seconds, dropped | Medium severity, Network Service Discovery (T1046) | Correctly identified reconnaissance, but rated High (slightly overrated) and gave a wrong ATT&CK ID | Partial |
+| Normal login | User logged in successfully from internal IP | Low severity, no threat | Rated Low and correctly said it is normal activity; the ATT&CK suggestion was unnecessary | Pass |
 
 ## Known Limitations
-- The 3B model is small. It can underrate severity and give wrong MITRE technique IDs, as seen in the SSH test.
+- The 3B model is small. In our 4 tests it underrated severity twice, overrated once, and gave incorrect MITRE technique IDs in 3 of 4 cases.
+- It can invent ATT&CK IDs, so IDs must be verified against the official MITRE ATT&CK site.
 - Output should be reviewed by a human analyst. This tool assists analysts, it does not replace them.
 - Single-log analysis only, no correlation across multiple logs.
+- Possible future improvement: a larger model (up to 8B) and a validated ATT&CK lookup table.
 
 ## Team
 - Ume Aiman (ayman-cyber13): idea, prompt design, interface, testing
